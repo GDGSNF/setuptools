@@ -103,17 +103,11 @@ class upload(PyPIRCCommand):
             # action
             ':action': 'file_upload',
             'protocol_version': '1',
-
-            # identify release
             'name': meta.get_name(),
             'version': meta.get_version(),
-
-            # file content
-            'content': (os.path.basename(filename),content),
+            'content': (os.path.basename(filename), content),
             'filetype': command,
             'pyversion': pyversion,
-
-            # additional meta-data
             'metadata_version': '1.0',
             'summary': meta.get_description(),
             'home_page': meta.get_url(),
@@ -125,13 +119,12 @@ class upload(PyPIRCCommand):
             'platform': meta.get_platforms(),
             'classifiers': meta.get_classifiers(),
             'download_url': meta.get_download_url(),
-            # PEP 314
             'provides': meta.get_provides(),
             'requires': meta.get_requires(),
             'obsoletes': meta.get_obsoletes(),
-            }
+            'comment': '',
+        }
 
-        data['comment'] = ''
 
         # file content digests
         for digest_name, digest_cons in _FILE_CONTENT_DIGESTS.items():

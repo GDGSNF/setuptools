@@ -113,10 +113,11 @@ class build_py(orig.build_py):
         self.manifest_files = mf = {}
         if not self.distribution.include_package_data:
             return
-        src_dirs = {}
-        for package in self.packages or ():
+        src_dirs = {
+            assert_relative(self.get_package_dir(package)): package
             # Locate package source directory
-            src_dirs[assert_relative(self.get_package_dir(package))] = package
+            for package in self.packages or ()
+        }
 
         self.run_command('egg_info')
         ei_cmd = self.get_finalized_command('egg_info')
@@ -128,9 +129,7 @@ class build_py(orig.build_py):
                 prev = d
                 d, df = os.path.split(d)
                 f = os.path.join(df, f)
-            if d in src_dirs:
-                if path.endswith('.py') and f == oldf:
-                    continue  # it's a module, not data
+            if d in src_dirs and (not path.endswith('.py') or f != oldf):
                 mf.setdefault(src_dirs[d], []).append(path)
 
     def get_data_files(self):

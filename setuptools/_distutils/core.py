@@ -54,7 +54,7 @@ extension_keywords = ('name', 'sources', 'include_dirs',
                       'extra_objects', 'extra_compile_args', 'extra_link_args',
                       'swig_opts', 'export_symbols', 'depends', 'language')
 
-def setup (**attrs):
+def setup(**attrs):
     """The gateway to the Distutils: do everything your setup script needs
     to do, in a highly flexible and user-driven way.  Briefly: create a
     Distribution instance; find and parse config files; parse the command
@@ -149,12 +149,11 @@ def setup (**attrs):
         except KeyboardInterrupt:
             raise SystemExit("interrupted")
         except OSError as exc:
-            if DEBUG:
-                sys.stderr.write("error: %s\n" % (exc,))
-                raise
-            else:
+            if not DEBUG:
                 raise SystemExit("error: %s" % (exc,))
 
+            sys.stderr.write("error: %s\n" % (exc,))
+            raise
         except (DistutilsError,
                 CCompilerError) as msg:
             if DEBUG:

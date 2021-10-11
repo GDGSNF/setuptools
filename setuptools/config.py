@@ -250,11 +250,7 @@ class ConfigHandler:
         if isinstance(value, list):  # _get_parser_compound case
             return value
 
-        if '\n' in value:
-            value = value.splitlines()
-        else:
-            value = value.split(separator)
-
+        value = value.splitlines() if '\n' in value else value.split(separator)
         return [chunk.strip() for chunk in value if chunk.strip()]
 
     @classmethod
@@ -453,11 +449,8 @@ class ConfigHandler:
         :param callable values_parser:
         :rtype: dict
         """
-        value = {}
         values_parser = values_parser or (lambda val: val)
-        for key, (_, val) in section_options.items():
-            value[key] = values_parser(val)
-        return value
+        return {key: values_parser(val) for key, (_, val) in section_options.items()}
 
     def parse_section(self, section_options):
         """Parses configuration file section.
@@ -478,10 +471,7 @@ class ConfigHandler:
         """
         for section_name, section_options in self.sections.items():
 
-            method_postfix = ''
-            if section_name:  # [section.option] variant
-                method_postfix = '_%s' % section_name
-
+            method_postfix = '_%s' % section_name if section_name else '' # [section.option] variant
             section_parser_method = getattr(
                 self,
                 # Dots in section names are translated into dunderscores.
